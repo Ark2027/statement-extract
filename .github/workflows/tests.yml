@@ -1,0 +1,47 @@
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install
+        run: pip install -e .
+
+      - name: Number parsing
+        run: python tests/test_money.py
+
+      - name: PDF layer and cross-check
+        run: python tests/test_pdf.py
+
+      - name: End to end
+        run: python tests/test_pipeline.py
+
+      - name: Regenerating fixtures must not change them
+        run: |
+          python tools/make_fixtures.py
+          git diff --exit-code -- fixtures \
+            || (echo "::error::fixtures are stale; run tools/make_fixtures.py and commit" && exit 1)
+
+      - name: CLI runs and gates on review
+        run: |
+          pip install -e .
+          statement-extract fixtures/clean.pdf
+          statement-extract fixtures/contradictory.pdf && exit 1 || echo "correctly exited non-zero"

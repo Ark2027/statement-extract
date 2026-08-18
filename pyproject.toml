@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "statement-extract"
+version = "1.0.0"
+description = "Pull figures out of financial statement PDFs, and check them before you use them."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "Mark Pease" }]
+keywords = ["pdf", "financial-statements", "extraction", "ocr", "validation", "accounting"]
+classifiers = [
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "License :: OSI Approved :: MIT License",
+  "Topic :: Office/Business :: Financial :: Accounting",
+  "Topic :: Text Processing",
+]
+dependencies = ["pdfplumber>=0.11"]
+
+[project.optional-dependencies]
+# Only needed for --cross-check and for reading scanned PDFs. The Tesseract
+# binary is a separate, non-Python install.
+ocr = ["pytesseract>=0.3", "Pillow>=10"]
+
+[project.scripts]
+statement-extract = "statement_extract.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/Ark2027/statement-extract"
+
+[tool.setuptools.packages.find]
+where = ["src"]
