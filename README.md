@@ -25,7 +25,6 @@ Every one produces a plausible number. None raises anything.
 ## What it does about it
 
 ```bash
-pip install statement-extract
 statement-extract q3.pdf
 ```
 
@@ -104,14 +103,28 @@ Every report carries a 0–100 score that drops for OCR use, missing fields, cro
 
 ## Installing
 
+Needs Python 3.11 or newer. Not on PyPI, so install it from the repo:
+
 ```bash
-pip install statement-extract
+git clone https://github.com/Ark2027/statement-extract
+cd statement-extract
+
+python -m venv .venv
+source .venv/bin/activate      # Windows: .venv\Scripts\activate
+
+pip install -e .
+```
+
+Check it works against a bundled fixture:
+
+```bash
+statement-extract fixtures/clean.pdf
 ```
 
 OCR is optional and needs the Tesseract binary, which is not a Python package:
 
 ```bash
-pip install "statement-extract[ocr]"
+pip install -e ".[ocr]"
 export TESSERACT_CMD=/path/to/tesseract   # only if it isn't on PATH
 ```
 
